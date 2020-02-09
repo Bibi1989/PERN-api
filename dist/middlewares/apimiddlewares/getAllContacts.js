@@ -15,11 +15,22 @@ const validation_1 = require("../validation");
 exports.getAllContacts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const contacts = yield pg_connect_1.db.query(pg_connect_1.sql `SELECT * FROM contacts WHERE user_id = ${req.user.id}`);
-        res.status(200).json(contacts);
+        res.status(200).json({ data: contacts });
     }
     catch (error) {
         console.log(error.message);
         res.status(401).json({ error: error.message });
+    }
+});
+exports.getAContact = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const contact = yield pg_connect_1.db.query(pg_connect_1.sql `SELECT * FROM contacts WHERE id = ${id}`);
+        res.status(200).json({ data: contact });
+    }
+    catch (error) {
+        console.log(error.message);
+        res.status(404).json({ error: error.message });
     }
 });
 // post a contact

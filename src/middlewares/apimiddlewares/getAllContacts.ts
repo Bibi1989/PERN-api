@@ -9,10 +9,23 @@ export const getAllContacts = async (req: any, res: Response) => {
     const contacts = await db.query(
       sql`SELECT * FROM contacts WHERE user_id = ${req.user.id}`
     );
-    res.status(200).json(contacts);
+    res.status(200).json({ data: contacts });
   } catch (error) {
     console.log(error.message);
     res.status(401).json({ error: error.message });
+  }
+};
+
+export const getAContact = async (req: any, res: Response) => {
+  const { id } = req.params;
+  try {
+    const contact = await db.query(
+      sql`SELECT * FROM contacts WHERE id = ${id}`
+    );
+    res.status(200).json({ data: contact });
+  } catch (error) {
+    console.log(error.message);
+    res.status(404).json({ error: error.message });
   }
 };
 
