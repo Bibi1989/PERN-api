@@ -8,25 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-exports.Auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.headers["auth"];
-    console.log(token);
-    if (!token) {
-        res.status(401).json({ error: "you are not authorise" });
-    }
+const pg_connect_1 = require("../../models/pg-connect");
+exports.getAllContacts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const decoded = jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY);
-        req.user = decoded;
-        next();
+        const contacts = yield pg_connect_1.db.query(pg_connect_1.sql `SELECT * FROM contacts WHERE user_id=${req.user.id}`);
+        res.status(200).json(contacts);
     }
     catch (error) {
-        console.log({ error: error.message });
-        res.status(404).json({ error: error.message });
+        console.log(error.message);
+        res.status(401).json({ error: error.message });
     }
 });
-//# sourceMappingURL=auth.js.map
+//# sourceMappingURL=getAllContacts.js.map

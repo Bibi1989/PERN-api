@@ -8,6 +8,7 @@ var app = express();
 // import routes from the route module
 import postUserRoute from './routes/Users/users'
 import authUserRoute from './routes/Users/auth'
+import getContacts from './routes/Contacts/contacts'
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -17,6 +18,7 @@ app.use(cookieParser());
 // endpoints for imported routes
 app.use('/users', postUserRoute)
 app.use('/users', authUserRoute)
+app.use('/api/contacts', getContacts)
 
 // catch 404 and forward to error handler
 app.use(function(req: Request, res: Response, next: NextFunction) {

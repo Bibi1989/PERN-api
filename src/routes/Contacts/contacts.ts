@@ -1,7 +1,8 @@
-import { Router } from "express";
+import { Response, Router } from "express";
 const router = Router();
-import { Contacts } from "../../middlewares/interface";
+import { getAllContacts } from "../../middlewares/apimiddlewares/getAllContacts";
+import {Auth} from '../../middlewares/auth'
 
-router.get("/");
+router.get("/", Auth, getAllContacts);
 
 export default router;

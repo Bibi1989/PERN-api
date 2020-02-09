@@ -11,6 +11,7 @@ var app = express_1.default();
 // import routes from the route module
 const users_1 = __importDefault(require("./routes/Users/users"));
 const auth_1 = __importDefault(require("./routes/Users/auth"));
+const contacts_1 = __importDefault(require("./routes/Contacts/contacts"));
 app.use(morgan_1.default('dev'));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
@@ -18,6 +19,7 @@ app.use(cookie_parser_1.default());
 // endpoints for imported routes
 app.use('/users', users_1.default);
 app.use('/users', auth_1.default);
+app.use('/api/contacts', contacts_1.default);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(http_errors_1.default(404));

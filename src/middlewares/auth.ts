@@ -2,7 +2,8 @@ import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 export const Auth = async (req: any, res: Response, next: NextFunction) => {
-  const token = req["auth"];
+  const token = req.headers["auth"];
+  console.log(token)
   if (!token) {
     res.status(401).json({ error: "you are not authorise" });
   }
