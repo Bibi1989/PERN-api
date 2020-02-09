@@ -18,23 +18,26 @@ const validation_1 = require("../../middlewares/validation");
 const pg_connect_1 = require("../../models/pg-connect");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { error, value } = validation_1.validateUsers(req.body);
+router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { error, value } = validation_1.validateAuth(req.body);
     if (error) {
         return res.status(404).json({ error: error.details[0].message });
     }
-    const { username, email, password } = value;
-    let [user] = yield pg_connect_1.db.query(pg_connect_1.sql `SELECT email FROM users WHERE email=${email}`);
-    if (user) {
-        return res.status(404).json({ error: "User exist" });
+    const { email, password } = value;
+    let [user] = yield pg_connect_1.db.query(pg_connect_1.sql `SELECT * FROM users WHERE email=${email}`);
+    if (!user) {
+        return res
+            .status(404)
+            .json({ error: "You can't login until you register" });
     }
-    const salt = yield bcryptjs_1.default.genSalt(10);
-    const hashedPassword = yield bcryptjs_1.default.hash(password, salt);
+    const validPassword = yield bcryptjs_1.default.compare(password, user.password);
+    if (!validPassword) {
+        res.status(404).json({ error: "Invalid password" });
+    }
     try {
-        user = yield pg_connect_1.db.query(pg_connect_1.sql `INSERT INTO users(username, email, password) VALUES (${username}, ${email}, ${hashedPassword}) returning email, username`);
         const token = yield jsonwebtoken_1.default.sign({ id: user.id }, process.env.SECRET_KEY);
         res.header("auth", token);
-        res.status(200).json({ data: user, token });
+        res.status(200).json({ data: { email: user.email }, token });
     }
     catch (error) {
         console.log(error.message);
@@ -42,4 +45,4 @@ router.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 }));
 exports.default = router;
-//# sourceMappingURL=users.js.map
+//# sourceMappingURL=auth.js.map

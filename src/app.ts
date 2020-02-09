@@ -7,6 +7,7 @@ var app = express();
 
 // import routes from the route module
 import postUserRoute from './routes/Users/users'
+import authUserRoute from './routes/Users/auth'
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use(cookieParser());
 
 // endpoints for imported routes
 app.use('/users', postUserRoute)
+app.use('/users', authUserRoute)
 
 // catch 404 and forward to error handler
 app.use(function(req: Request, res: Response, next: NextFunction) {

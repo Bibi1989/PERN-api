@@ -5,7 +5,7 @@ import { db, sql } from "../../models/pg-connect";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-router.post("/", async (req: any, res) => {
+router.post("/register", async (req: any, res) => {
   const { error, value } = validateUsers(req.body);
   if (error) {
     return res.status(404).json({ error: error.details[0].message });
@@ -26,8 +26,8 @@ router.post("/", async (req: any, res) => {
       sql`INSERT INTO users(username, email, password) VALUES (${username}, ${email}, ${hashedPassword}) returning email, username`
     );
     const token = await jwt.sign({ id: user.id }, process.env.SECRET_KEY);
-    res.header("auth", token)
-    res.status(200).json({data: user, token});
+    res.header("auth", token);
+    res.status(200).json({ data: user, token });
   } catch (error) {
     console.log(error.message);
     res.status(404).json({ error: error.message });

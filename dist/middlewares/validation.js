@@ -26,6 +26,27 @@ exports.validateUsers = (body) => {
         value
     };
 };
+exports.validateAuth = (body) => {
+    const schema = joi_1.default.object({
+        email: joi_1.default
+            .string()
+            .trim()
+            .email(),
+        password: joi_1.default
+            .string()
+            .trim()
+            .min(4)
+            .required()
+    });
+    const { error, value } = schema.validate(body, {
+        abortEarly: false,
+        stripUnknown: true
+    });
+    return {
+        error,
+        value
+    };
+};
 exports.validateContacts = (body) => {
     const schema = joi_1.default.object({
         name: joi_1.default.string().trim(),
