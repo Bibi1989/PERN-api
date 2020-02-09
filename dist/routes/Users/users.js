@@ -17,6 +17,7 @@ const router = express_1.Router();
 const validation_1 = require("../../middlewares/validation");
 const pg_connect_1 = require("../../models/pg-connect");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { error, value } = validation_1.validateUsers(req.body);
     if (error) {
@@ -31,7 +32,9 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const hashedPassword = yield bcryptjs_1.default.hash(password, salt);
     try {
         user = yield pg_connect_1.db.query(pg_connect_1.sql `INSERT INTO users(username, email, password) VALUES (${username}, ${email}, ${hashedPassword}) returning email, username`);
-        return res.json(...user);
+        const token = yield jsonwebtoken_1.default.sign({ id: user.id }, process.env.SECRET_KEY);
+        res.header("auth", token);
+        res.status(200).json({ data: user, token });
     }
     catch (error) {
         console.log(error.message);
